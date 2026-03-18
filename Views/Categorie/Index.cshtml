@@ -1,0 +1,58 @@
+@model IEnumerable<Categorie>
+@{
+    ViewData["Title"] = "Gestion des Catégories";
+}
+
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title"><i class="fas fa-tags text-warning me-2"></i>Gestion des Catégories</h1>
+                <div class="breadcrumb-custom">
+                    <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    <span class="mx-2">/</span>
+                    <span>Catégories</span>
+                </div>
+            </div>
+            <a asp-action="Create" class="btn-primary-custom">
+                <i class="fas fa-plus"></i> Nouvelle Catégorie
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="alert" style="background: rgba(0,200,83,0.1); border: 1px solid rgba(0,200,83,0.3); border-radius: var(--radius-sm); color: #00c853;">
+        <i class="fas fa-code me-2"></i> Ce CRUD est réalisé avec <strong>ADO.NET</strong> (sans Entity Framework) �DT� conformément aux exigences du projet.
+    </div>
+
+    <div class="row g-4 mt-2">
+        @foreach (var cat in Model)
+        {
+            <div class="col-md-4">
+                <div class="article-card">
+                    <div class="article-card-body">
+                        <div class="text-center mb-3">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; background: rgba(255,109,0,0.1); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                                <i class="@(cat.Icone ?? "fas fa-tag")" style="color: var(--primary-light);"></i>
+                            </div>
+                        </div>
+                        <h5 class="text-center mb-1">@cat.Nom</h5>
+                        <p class="text-muted text-center" style="font-size: 0.85rem;">@(cat.Description ?? "Aucune description")</p>
+                        <div class="d-flex gap-2 justify-content-center mt-3">
+                            <a asp-action="Edit" asp-route-id="@cat.Id" class="btn btn-sm btn-outline-warning" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@cat.Id" class="btn btn-sm btn-outline-info" title="Détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@cat.Id" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,99 @@
+@model Commande
+@{
+    ViewData["Title"] = "Commande " + Model.NumeroCommande;
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-receipt text-warning me-2"></i>Détail de la Commande</h1>
+        <div class="breadcrumb-custom">
+            <a asp-action="Index">Mes Commandes</a><span class="mx-2">/</span><span>@Model.NumeroCommande</span>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 800px;">
+    <!-- Order Header -->
+    <div class="order-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="order-number" style="font-size: 1.4rem;">@Model.NumeroCommande</span>
+                <p class="text-muted mt-2 mb-0">
+                    <i class="far fa-calendar me-1"></i> @Model.DateCommande.ToString("dddd dd MMMM yyyy à HH:mm")
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                @{
+                    var badgeClass = Model.Statut switch
+                    {
+                        StatutCommande.EnAttente => "badge-en-attente",
+                        StatutCommande.EnPreparation => "badge-en-preparation",
+                        StatutCommande.Prete => "badge-prete",
+                        StatutCommande.Livree => "badge-livree",
+                        StatutCommande.Annulee => "badge-annulee",
+                        _ => "badge-en-attente"
+                    };
+                }
+                <span class="badge badge-status @badgeClass" style="font-size: 0.9rem; padding: 0.6rem 1.5rem;">@Model.Statut</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="table-custom mb-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th class="text-center">Quantité</th>
+                    <th class="text-end">Prix unitaire</th>
+                    <th class="text-end">Sous-total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items != null)
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.NomArticle</strong>
+                            </td>
+                            <td class="text-center">×@item.Quantite</td>
+                            <td class="text-end">@item.PrixUnitaire.ToString("N2") DT</td>
+                            <td class="text-end"><strong>@item.SousTotal.ToString("N2") DT</strong></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong style="font-size: 1.1rem;">Total</strong></td>
+                    <td class="text-end"><strong class="text-warning" style="font-size: 1.3rem;">@Model.MontantTotal.ToString("N2") DT</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+        <div class="p-3 rounded mb-3" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
+            <small class="text-muted d-block mb-1"><i class="fas fa-sticky-note me-1"></i> Notes :</small>
+            @Model.Notes
+        </div>
+    }
+
+    <div class="d-flex gap-2">
+        @if (Model.Statut == StatutCommande.EnAttente)
+        {
+            <form asp-action="Annuler" asp-route-id="@Model.Id" method="post">
+                <button type="submit" class="btn-outline-custom" style="border-color: var(--danger); color: var(--danger);"
+                        onclick="return confirm('Voulez-vous vraiment annuler cette commande ?');">
+                    <i class="fas fa-times"></i> Annuler la commande
+                </button>
+            </form>
+        }
+        <a asp-action="Index" class="btn-outline-custom"><i class="fas fa-arrow-left"></i> Retour aux commandes</a>
+        <a asp-controller="Home" asp-action="Index" class="btn-primary-custom"><i class="fas fa-utensils"></i> Commander à nouveau</a>
+    </div>
+</div>

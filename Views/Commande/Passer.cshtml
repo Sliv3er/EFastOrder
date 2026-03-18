@@ -1,0 +1,58 @@
+@model PasserCommandeViewModel
+@{
+    ViewData["Title"] = "Passer la Commande";
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-check-circle text-warning me-2"></i>Confirmer la Commande</h1>
+        <div class="breadcrumb-custom">
+            <a asp-controller="Panier" asp-action="Index">Panier</a><span class="mx-2">/</span><span>Confirmation</span>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="max-width: 700px;">
+    <div class="form-card" style="max-width: 100%;">
+        <h5 class="mb-4"><i class="fas fa-clipboard-list me-2 text-warning"></i>Récapitulatif de votre commande</h5>
+
+        @if (Model.Panier?.Items != null)
+        {
+            @foreach (var item in Model.Panier.Items)
+            {
+                <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom: 1px solid var(--border);">
+                    <div>
+                        <strong>@item.Article?.Nom</strong>
+                        <br /><small class="text-muted">×@item.Quantite • @item.PrixUnitaire.ToString("N2") DT/u</small>
+                    </div>
+                    <strong>@item.SousTotal.ToString("N2") DT</strong>
+                </div>
+            }
+
+            <div class="cart-summary-total mt-3">
+                <span>Total à payer</span>
+                <span>@Model.Panier.Total.ToString("N2") DT</span>
+            </div>
+        }
+
+        <form asp-controller="Commande" asp-action="Confirmer" method="post" class="mt-4">
+            <div class="mb-4">
+                <label class="form-label">Notes (optionnel)</label>
+                <textarea name="notes" class="form-control" rows="2" placeholder="Instructions spéciales, allergies..."></textarea>
+            </div>
+
+            <div class="alert" style="background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.2); border-radius: var(--radius-sm); color: #ffc107; font-size: 0.85rem;">
+                <i class="fas fa-info-circle me-2"></i> Le paiement se fait à la livraison/récupération. Aucun paiement en ligne requis.
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn-primary-custom flex-grow-1 justify-content-center" style="padding: 0.85rem;">
+                    <i class="fas fa-check-circle"></i> Confirmer la commande
+                </button>
+                <a asp-controller="Panier" asp-action="Index" class="btn-outline-custom">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

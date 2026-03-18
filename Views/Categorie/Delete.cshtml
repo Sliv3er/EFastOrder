@@ -1,0 +1,38 @@
+@model Categorie
+@{
+    ViewData["Title"] = "Supprimer " + Model.Nom;
+}
+
+<div class="container" style="padding-top: 2rem;">
+    <div class="delete-card">
+        <div class="delete-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h4>Confirmer la suppression</h4>
+        <p class="text-muted mt-3">Êtes-vous sûr de vouloir supprimer la catégorie suivante ?</p>
+        <div class="p-3 my-3 rounded" style="background: rgba(255,23,68,0.05); border: 1px solid rgba(255,23,68,0.2);">
+            <h5 class="mb-1"><i class="@(Model.Icone ?? "fas fa-tag") me-2"></i>@Model.Nom</h5>
+            <small class="text-muted">@(Model.Description ?? "Aucune description")</small>
+        </div>
+
+        @if (ViewBag.HasArticles == true)
+        {
+            <div class="alert" style="background: rgba(255,193,7,0.1); border: 1px solid rgba(255,193,7,0.3); color: #ffc107; border-radius: var(--radius-sm);">
+                <i class="fas fa-exclamation-triangle me-2"></i> Cette catégorie contient des articles. Veuillez d'abord supprimer ou réaffecter les articles.
+            </div>
+        }
+
+        <p class="text-danger" style="font-size: 0.85rem;"><i class="fas fa-code me-1"></i> Opération ADO.NET : DELETE</p>
+
+        <div class="d-flex gap-2 justify-content-center mt-4">
+            @if (ViewBag.HasArticles != true)
+            {
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn-primary-custom" style="background: var(--danger);">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            }
+            <a asp-action="Index" class="btn-outline-custom"><i class="fas fa-arrow-left"></i> Annuler</a>
+        </div>
+    </div>
+</div>

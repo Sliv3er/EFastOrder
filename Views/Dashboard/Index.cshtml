@@ -1,0 +1,124 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Tableau de Bord";
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-chart-line text-warning me-2"></i>Tableau de Bord</h1>
+        <div class="breadcrumb-custom">
+            <a asp-controller="Home" asp-action="Index">Menu</a><span class="mx-2">/</span><span>Administration</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card articles animate__animated animate__fadeInUp">
+                <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+                <div class="stat-value">@Model.NombreArticles</div>
+                <div class="stat-label">Articles</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card categories animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                <div class="stat-value">@Model.NombreCategories</div>
+                <div class="stat-label">Catégories</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card commandes animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="stat-icon"><i class="fas fa-receipt"></i></div>
+                <div class="stat-value">@Model.NombreCommandes</div>
+                <div class="stat-label">Commandes</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card revenu animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <div class="stat-icon"><i class="fas fa-euro-sign"></i></div>
+                <div class="stat-value">@Model.RevenuTotal.ToString("N0")</div>
+                <div class="stat-label">Revenu Total (DT)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <a asp-controller="Article" asp-action="Index" class="article-card d-block text-decoration-none" style="cursor: pointer;">
+                <div class="article-card-body text-center py-4">
+                    <i class="fas fa-utensils text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="text-white">Gérer les Articles</h6>
+                    <small class="text-muted">CRUD Entity Framework</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Categorie" asp-action="Index" class="article-card d-block text-decoration-none" style="cursor: pointer;">
+                <div class="article-card-body text-center py-4">
+                    <i class="fas fa-tags text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="text-white">Gérer les Catégories</h6>
+                    <small class="text-muted">CRUD ADO.NET</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Commande" asp-action="Toutes" class="article-card d-block text-decoration-none" style="cursor: pointer;">
+                <div class="article-card-body text-center py-4">
+                    <i class="fas fa-clipboard-list text-warning mb-2" style="font-size: 2rem;"></i>
+                    <h6 class="text-white">Toutes les Commandes</h6>
+                    <small class="text-muted">Gestion des commandes</small>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    @if (Model.DernieresCommandes.Any())
+    {
+        <div class="section-header">
+            <h3 class="section-title"><i class="fas fa-clock"></i> Dernières Commandes</h3>
+        </div>
+        <div class="table-custom">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>N° Commande</th>
+                        <th>Date</th>
+                        <th>Articles</th>
+                        <th>Total</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cmd in Model.DernieresCommandes)
+                    {
+                        <tr>
+                            <td><a asp-controller="Commande" asp-action="Details" asp-route-id="@cmd.Id" style="color: var(--primary-light); text-decoration: none;">@cmd.NumeroCommande</a></td>
+                            <td>@cmd.DateCommande.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@(cmd.Items?.Count ?? 0)</td>
+                            <td><strong>@cmd.MontantTotal.ToString("N2") DT</strong></td>
+                            <td>
+                                @{
+                                    var bc = cmd.Statut switch
+                                    {
+                                        StatutCommande.EnAttente => "badge-en-attente",
+                                        StatutCommande.EnPreparation => "badge-en-preparation",
+                                        StatutCommande.Prete => "badge-prete",
+                                        StatutCommande.Livree => "badge-livree",
+                                        StatutCommande.Annulee => "badge-annulee",
+                                        _ => "badge-en-attente"
+                                    };
+                                }
+                                <span class="badge badge-status @bc">@cmd.Statut</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

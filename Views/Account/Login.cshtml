@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Connexion";
+    Layout = "_Layout";
+}
+
+<div class="auth-container">
+    <div class="auth-card animate__animated animate__fadeIn">
+        <div class="text-center mb-3">
+            <i class="fas fa-fire-flame-curved" style="font-size: 2.5rem; color: var(--primary-light); filter: drop-shadow(0 0 10px rgba(255,109,0,0.4));"></i>
+        </div>
+        <h2 class="auth-title">Connexion</h2>
+        <p class="auth-subtitle">Acc√©dez √† votre compte E-FastOrder</p>
+
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <form asp-action="Login" method="post">
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+            
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-envelope me-1"></i> Email</label>
+                <input type="email" name="email" class="form-control" placeholder="votre@email.com" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><i class="fas fa-lock me-1"></i> Mot de passe</label>
+                <input type="password" name="password" class="form-control" placeholder="‚DT¢‚DT¢‚DT¢‚DT¢‚DT¢‚DT¢‚DT¢‚DT¢" required />
+            </div>
+
+            <div class="mb-4">
+                <div class="form-check">
+                    <input type="checkbox" name="rememberMe" value="true" class="form-check-input" id="rememberMe" />
+                    <label class="form-check-label text-muted" for="rememberMe">Se souvenir de moi</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-custom w-100 justify-content-center" style="padding: 0.85rem; font-size: 1rem;">
+                <i class="fas fa-sign-in-alt"></i> Se connecter
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">Pas encore de compte ? <a asp-action="Register" style="color: var(--primary-light); text-decoration: none;">Cr√©er un compte</a></p>
+        </div>
+
+        <div class="mt-4 p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 0.8rem;">
+            <p class="text-muted mb-1"><strong>Compte Admin (test) :</strong></p>
+            <p class="text-muted mb-0">Email: <code>admin@@efastorder.com</code></p>
+            <p class="text-muted mb-0">Mot de passe: <code>Admin123</code></p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+@model MenuViewModel
+@{
+    ViewData["Title"] = "Menu du Restaurant";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container position-relative">
+        <h1 class="hero-title animate__animated animate__fadeInDown">Savourez l'Excellence</h1>
+        <p class="hero-subtitle animate__animated animate__fadeInUp">Des plats d'exception préparés avec passion et des ingrédients sélectionnés</p>
+        
+        <!-- Search Bar -->
+        <div class="search-bar mt-4 animate__animated animate__fadeIn">
+            <form asp-action="Index" method="get">
+                <input type="hidden" name="categorieId" value="@Model.CategorieSelectionnee" />
+                <i class="fas fa-search"></i>
+                <input type="text" name="recherche" value="@Model.Recherche" 
+                       placeholder="Rechercher un plat..." class="form-control" />
+            </form>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Category Filter -->
+    <div class="category-filter animate__animated animate__fadeIn">
+        <a asp-action="Index" class="category-btn @(Model.CategorieSelectionnee == null ? "active" : "")">
+            <i class="fas fa-th-large"></i> Tous
+        </a>
+        @foreach (var cat in Model.Categories)
+        {
+            <a asp-action="Index" asp-route-categorieId="@cat.Id" 
+               class="category-btn @(Model.CategorieSelectionnee == cat.Id ? "active" : "")">
+                <i class="@(cat.Icone ?? "fas fa-tag")"></i> @cat.Nom
+            </a>
+        }
+    </div>
+
+    <!-- Articles Grid -->
+    @if (Model.Articles.Any())
+    {
+        <div class="article-grid">
+            @foreach (var article in Model.Articles)
+            {
+                <div class="article-card animate__animated animate__fadeInUp">
+                    <div class="article-card-img-wrapper">
+                        @if (!string.IsNullOrEmpty(article.ImageUrl))
+                        {
+                            <img src="@article.ImageUrl" alt="@article.Nom" class="article-card-img" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="article-card-img-placeholder">
+                                <i class="@(article.Categorie?.Icone ?? "fas fa-utensils")"></i>
+                            </div>
+                        }
+                        <div class="article-card-img-overlay"></div>
+                        @if (article.TempPreparation.HasValue)
+                        {
+                            <span class="article-card-time-badge">
+                                <i class="far fa-clock"></i> @article.TempPreparation min
+                            </span>
+                        }
+                    </div>
+                    <div class="article-card-body">
+                        <span class="article-card-category">
+                            @article.Categorie?.Nom
+                        </span>
+                        <h5 class="article-card-title">@article.Nom</h5>
+                        <p class="article-card-desc">@article.Description</p>
+                        <div class="article-card-footer">
+                            <div>
+                                <span class="article-price">@article.Prix.ToString("N2")<small> DT</small></span>
+                            </div>
+                            <form asp-controller="Panier" asp-action="Ajouter" method="post">
+                                <input type="hidden" name="articleId" value="@article.Id" />
+                                <button type="submit" class="btn-add-cart" title="Ajouter au panier">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h4>Aucun article trouvé</h4>
+            <p>Essayez de modifier votre recherche ou de sélectionner une autre catégorie.</p>
+            <a asp-action="Index" class="btn-primary-custom mt-3">
+                <i class="fas fa-arrow-left"></i> Voir tout le menu
+            </a>
+        </div>
+    }
+</div>

@@ -1,0 +1,68 @@
+@model IEnumerable<Commande>
+@{
+    ViewData["Title"] = "Mes Commandes";
+}
+
+<div class="page-header">
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-receipt text-warning me-2"></i>Mes Commandes</h1>
+        <div class="breadcrumb-custom">
+            <a asp-controller="Home" asp-action="Index">Menu</a><span class="mx-2">/</span><span>Commandes</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var commande in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="article-card" style="cursor: pointer;" onclick="window.location='@Url.Action("Details", new { id = commande.Id })'">
+                        <div class="article-card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="order-number">@commande.NumeroCommande</span>
+                                @{
+                                    var badgeClass = commande.Statut switch
+                                    {
+                                        StatutCommande.EnAttente => "badge-en-attente",
+                                        StatutCommande.EnPreparation => "badge-en-preparation",
+                                        StatutCommande.Prete => "badge-prete",
+                                        StatutCommande.Livree => "badge-livree",
+                                        StatutCommande.Annulee => "badge-annulee",
+                                        _ => "badge-en-attente"
+                                    };
+                                }
+                                <span class="badge badge-status @badgeClass">@commande.Statut</span>
+                            </div>
+                            <p class="text-muted mb-2" style="font-size: 0.85rem;">
+                                <i class="far fa-calendar me-1"></i> @commande.DateCommande.ToString("dd/MM/yyyy à HH:mm")
+                            </p>
+                            <p class="text-muted mb-3" style="font-size: 0.85rem;">
+                                <i class="fas fa-box me-1"></i> @(commande.Items?.Count ?? 0) article(s)
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center pt-2" style="border-top: 1px solid var(--border);">
+                                <span class="article-price">@commande.MontantTotal.ToString("N2") DT</span>
+                                <span class="btn-outline-custom" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;">
+                                    Voir détails <i class="fas fa-arrow-right ms-1"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <h4>Aucune commande</h4>
+            <p>Vous n'avez pas encore passé de commande.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn-primary-custom mt-3">
+                <i class="fas fa-utensils"></i> Commander maintenant
+            </a>
+        </div>
+    }
+</div>
